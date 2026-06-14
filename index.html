@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XIVHotbar Builder</title>
+    <meta name="description" content="Visual builder for Final Fantasy XI XIVHotbar addon.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <header class="top-bar">
+            <h1 class="title">XIVHotbar Builder</h1>
+            <div class="export-container">
+                <select id="job-select" class="job-select">
+                    <!-- Options injected by JS -->
+                </select>
+                <button id="help-button" class="btn-secondary">How to Use</button>
+                <button id="export-button" class="btn-primary">Export .lua</button>
+            </div>
+        </header>
+
+        <main class="middle-section">
+            <div class="search-container">
+                <input type="text" id="action-search" placeholder="Search actions..." />
+            </div>
+            <div class="carousel-container">
+                <button class="carousel-btn prev-btn" id="carousel-prev">&#10094;</button>
+                <div class="carousel-track" id="action-carousel">
+                    <!-- Actions will be injected here -->
+                </div>
+                <button class="carousel-btn next-btn" id="carousel-next">&#10095;</button>
+            </div>
+        </main>
+
+        <footer class="bottom-section">
+            <div class="hotbars-container" id="hotbars-container">
+                <!-- 4 Hotbars will be injected here -->
+            </div>
+        </footer>
+    </div>
+
+    <!-- Target Selection Modal -->
+    <div id="target-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2>Select Target</h2>
+            <p id="modal-action-name" class="modal-desc">Action Name</p>
+            <select id="modal-target-select" class="target-select modal-select">
+                <option value="t" selected>&lt;t&gt; (Current Target)</option>
+                <option value="me">&lt;me&gt; (Self)</option>
+                <option value="bt">&lt;bt&gt; (Battle Target)</option>
+                <option value="ht">&lt;ht&gt; (Help Target)</option>
+                <option value="ft">&lt;ft&gt; (Fellow Target)</option>
+                <option value="st">&lt;st&gt; (Sub-target)</option>
+                <option value="stpc">&lt;stpc&gt; (Sub-target PC)</option>
+                <option value="stpt">&lt;stpt&gt; (Sub-target Party)</option>
+                <option value="stal">&lt;stal&gt; (Sub-target Alliance)</option>
+                <option value="stnpc">&lt;stnpc&gt; (Sub-target NPC)</option>
+                <option value="lastst">&lt;lastst&gt; (Last Sub-target)</option>
+                <option value="r">&lt;r&gt; (Reply Target)</option>
+                <option value="pet">&lt;pet&gt; (Pet)</option>
+                <option value="scan">&lt;scan&gt; (Scan Target)</option>
+                <option value="focust">&lt;focust&gt; (Focus Target)</option>
+            </select>
+            <div class="modal-actions">
+                <button id="modal-cancel" class="btn-secondary">Cancel</button>
+                <button id="modal-confirm" class="btn-primary">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="help-modal" class="modal-overlay hidden">
+        <div class="modal-content help-content">
+            <h2>How to Use & Install</h2>
+            <ol class="help-list">
+                <li>Go to <a href="https://github.com/Akirane/XIVHotbar" target="_blank" rel="noopener noreferrer">https://github.com/Akirane/XIVHotbar</a></li>
+                <li>Click the green Code button, then click <strong>Download ZIP</strong></li>
+                <li>Extract the <code>XIVHotbar - master</code> folder inside the .zip file into your <code>Windower &gt; addons</code> folder</li>
+                <li>Go to <code>Windower &gt; scripts</code> and edit the <code>init.txt</code> file</li>
+                <li>Add <code>lua l xivhotbar</code> to the end of the file, save and close</li>
+                <li>Use this website to build your bars with your desired actions for your class</li>
+                <li>Click the <strong>Export .lua</strong> button once you're done</li>
+                <li>Two files will be downloaded: a General file and your in-game class file</li>
+                <li>Copy both of them to <code>Windower &gt; addons &gt; XIVHotbar - master &gt; data &gt; YourCharacterName</code> (create this folder if it doesn't exist)</li>
+                <li>Launch the game!</li>
+            </ol>
+            <div class="modal-actions">
+                <button id="help-close" class="btn-primary">Got it!</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
