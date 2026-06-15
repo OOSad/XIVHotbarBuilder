@@ -37,6 +37,8 @@ const hotbarsContainer = document.getElementById('hotbars-container');
 const searchInput = document.getElementById('action-search');
 const jobSelect = document.getElementById('job-select');
 const exportBtn = document.getElementById('export-button');
+const importBtn = document.getElementById('import-button');
+const importFileInput = document.getElementById('import-file');
 const prevBtn = document.getElementById('carousel-prev');
 const nextBtn = document.getElementById('carousel-next');
 const helpBtn = document.getElementById('help-button');
@@ -106,9 +108,7 @@ function createActionElement(action, isSlotContext = false) {
     name.textContent = action.displayName || action.name;
 
     el.appendChild(icon);
-    if (!isSlotContext) {
-        el.appendChild(name);
-    }
+    el.appendChild(name);
 
     el.addEventListener('dragstart', handleDragStart);
     el.addEventListener('dragend', handleDragEnd);
@@ -273,6 +273,10 @@ function setupEventListeners() {
     // Export
     exportBtn.addEventListener('click', exportToLua);
 
+    // Import
+    importBtn.addEventListener('click', () => importFileInput.click());
+    importFileInput.addEventListener('change', importFromLua);
+
     // Save state on select changes
     jobSelect.addEventListener('change', saveState);
 
@@ -374,3 +378,61 @@ function exportToLua() {
 
 // Start
 init();
+
+// Import logic
+function importFromLua(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // Try to parse the job from the filename if it matches our list
+    const basename = file.name.replace(/\.lua$/i, '');
+    const matchedJob = jobs.find(j => j.abbr.toUpperCase() === basename.toUpperCase());
+    if (matchedJob) {
+        jobSelect.value = matchedJob.abbr;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const text = e.target.result;
+        
+        // Clear current hotbars
+        hotbarState = {
+            1: Array(12).fill(null),
+            2: Array(12).fill(null),
+            3: Array(12).fill(null),
+            4: Array(12).fill(null)
+        };
+
+        // Match syntax: {'b 1 12', 'ma', 'Cure', 'stpc', 'Cure.'}
+        // Note: we must escape quotes or match accurately
+        // pattern groups: 1=hotbar, 2=slot, 3=type, 4=name, 5=target
+        const regex = /\{'b\s+(\d+)\s+(\d+)',\s*'([^']+)',\s*'([^']+)',\s*'([^']+)'/g;
+        let match;
+
+        while ((match = regex.exec(text)) !== null) {
+            const hbId = match[1];
+            // Subtract 1 because lua uses 1-indexed slots, arrays are 0-indexed
+            const slotIndex = parseInt(match[2]) - 1; 
+            const type = match[3];
+            const name = match[4];
+            const target = match[5];
+
+            if (hbId >= 1 && hbId <= 4 && slotIndex >= 0 && slotIndex < 12) {
+                // Find action in data.js by checking the exported name (action.name)
+                // and type.
+                const baseAction = actions.find(a => a.name === name && a.type === type);
+                
+                if (baseAction) {
+                    hotbarState[hbId][slotIndex] = { ...baseAction, customTarget: target };
+                }
+            }
+        }
+
+        renderHotbars();
+        saveState();
+        
+        // Reset the file input so the same file can be uploaded again if needed
+        importFileInput.value = '';
+    };
+    reader.readAsText(file);
+}
