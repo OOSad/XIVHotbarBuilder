@@ -460,3 +460,13 @@ body {
 .help-list a:hover {
     text-decoration: underline;
 }
+
+.help-note {
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    margin-top: 15px;
+    background: rgba(203, 168, 100, 0.1);
+    border-left: 3px solid var(--accent-gold);
+    padding: 10px 15px;
+    border-radius: 0 4px 4px 0;
+}
